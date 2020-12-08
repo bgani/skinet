@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Gani\\projects\\skinet\\API\\API.csproj": {}
+    "c:\\Gani\\projects\\skinet\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Gani\\projects\\skinet\\API\\API.csproj": {
+    "c:\\Gani\\projects\\skinet\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Gani\\projects\\skinet\\API\\API.csproj",
+        "projectUniqueName": "c:\\Gani\\projects\\skinet\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Gani\\projects\\skinet\\API\\API.csproj",
+        "projectPath": "c:\\Gani\\projects\\skinet\\API\\API.csproj",
         "packagesPath": "C:\\Users\\Gani\\.nuget\\packages\\",
-        "outputPath": "C:\\Gani\\projects\\skinet\\API\\obj\\",
+        "outputPath": "c:\\Gani\\projects\\skinet\\API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -40,6 +40,16 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[3.1.10, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
