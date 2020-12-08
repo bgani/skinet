@@ -1,5 +1,7 @@
+using API.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,12 +10,11 @@ namespace API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IConfiguration _config;
+        public Startup(IConfiguration config)
         {
-            Configuration = configuration;
+            _config = config;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // This is refered to dependency injectin container. Any services that we want to add to our app, 
@@ -21,8 +22,10 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<StoreContext>(x =>
+            x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
         }
- 
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // This is where we add middleware. Our HTTP reques is going throw a pipeline and it it gonna hit our API server.
         // And then if we want to interact or do anything with that request as ut goes on its journey to enter the API server,
