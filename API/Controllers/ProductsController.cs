@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using API.Data;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
-using API.Entities;
+using Core.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
