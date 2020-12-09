@@ -28,6 +28,8 @@ namespace API
             // servces.AddScoped got the optimal lifetime, the instance of repo will be created when the http comes in, when the request is finished it disposes a controller and the repository
             services.AddScoped<IProductRepository, ProductRepository>();
 
+            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
             services.AddControllers();
             // the StoreContext will be abailable only limited period given in a ServiceLifeTime.Scoped, which is a the http request entirety
             // once the request is finished, then the StoreContext is disposed
