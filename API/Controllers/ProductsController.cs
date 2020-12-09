@@ -10,6 +10,8 @@ using Core.Interfaces;
 namespace API.Controllers
 {
     [ApiController]
+    // One of the things Apicontroller does is validation 
+    // e.g It makes sure that the route parameter [HttpGet("{id}")] is actually an integer in case  
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
@@ -35,6 +37,17 @@ namespace API.Controllers
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             return await _repo.GetProductByIdAsync(id);
+        }
+
+        [HttpGet("brands")]
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands(){
+            // to get rid of 'Cannot implicitly convert type' error use Ok
+            return  Ok(await _repo.GetProductBrandsAsync());
+        }
+
+         [HttpGet("types")]
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes(){
+            return  Ok(await _repo.GetProductTypesAsync());
         }
     }
 }
