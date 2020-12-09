@@ -1,3 +1,4 @@
+using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,8 +20,14 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         // This is refered to dependency injectin container. Any services that we want to add to our app, 
         // that we want to make available to other parts of app we add inside of this method.
+        // When adding services the order does not matter
         public void ConfigureServices(IServiceCollection services)
         {
+            // services.AddTransient got very short lifetime, the repo will be created and destroyed upon using individual method
+            // sevices.AddSinglton got very long lifetime, the repo will be created when app starts and never be destroyed until the app shuts down
+            // servces.AddScoped got the optimal lifetime, the instance of repo will be created when the http comes in, when the request is finished it disposes a controller and the repository
+            services.AddScoped<IProductRepository, ProductRepository>();
+
             services.AddControllers();
             // the StoreContext will be abailable only limited period given in a ServiceLifeTime.Scoped, which is a the http request entirety
             // once the request is finished, then the StoreContext is disposed
@@ -32,6 +39,7 @@ namespace API
         // This is where we add middleware. Our HTTP reques is going throw a pipeline and it it gonna hit our API server.
         // And then if we want to interact or do anything with that request as ut goes on its journey to enter the API server,
         // and then out of API server, then we've got an opportunity inside here to add middleware which can do various things with the request.
+        // When adding a middleware in Configure method the ordering is important
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // if we are in a dev mode
