@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Core.Interfaces;
 using Core.Specifications;
+using API.Dtos;
 
 namespace API.Controllers
 {
@@ -31,11 +32,20 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<List<ProductToReturnDto>>> GetProducts()
         {
             var spec = new ProductsWithTypesAndBrandsSpecification();
             var products = await _productsRepo.ListAsync(spec);
-            return Ok(products);
+            return products.Select(product => new ProductToReturnDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                PictureUrl = product.PictureUrl,
+                Price = product.Price,
+                ProductBrand = product.ProductBrand.Name,
+                ProductType = product.ProductType.Name
+            }).ToList();
         }
 
         // As far as API cotroller concerned there is no difference between these two methods
@@ -43,22 +53,35 @@ namespace API.Controllers
         // the Route e.g. [Route("api/[controller]")], the method e.g. [HttpGet("{id}")]
         // and any route parameters
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
 
-            return await _productsRepo.GetEntityWithSpec(spec);
+            var product = await _productsRepo.GetEntityWithSpec(spec);
+
+            return new ProductToReturnDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                PictureUrl = product.PictureUrl,
+                Price = product.Price,
+                ProductBrand = product.ProductBrand.Name,
+                ProductType = product.ProductType.Name
+            };
         }
 
         [HttpGet("brands")]
-        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands(){
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
+        {
             // to get rid of 'Cannot implicitly convert type' error use Ok
-            return  Ok(await _productBrandRepo.ListAllAsync());
+            return Ok(await _productBrandRepo.ListAllAsync());
         }
 
-         [HttpGet("types")]
-        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes(){
-            return  Ok(await _productTypeRepo.ListAllAsync());
+        [HttpGet("types")]
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
+        {
+            return Ok(await _productTypeRepo.ListAllAsync());
         }
     }
 }
