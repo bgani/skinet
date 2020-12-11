@@ -55,6 +55,9 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
+            // when we don't have an endpoint that matches the request it's gonna redirect to errors controller and pass in the statuc code
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
             // if request comes to http (port:5000), then it is gonna redirect to https (port 5000 in our case)
             app.UseHttpsRedirection();
 
