@@ -36,22 +36,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductToReturnDto>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts()
         {
             var spec = new ProductsWithTypesAndBrandsSpecification();
             var products = await _productsRepo.ListAsync(spec);
-            return products.Select(product => new ProductToReturnDto
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                PictureUrl = product.PictureUrl,
-                Price = product.Price,
-                ProductBrand = product.ProductBrand.Name,
-                ProductType = product.ProductType.Name
-            }).ToList();
+            return Ok(_mapper
+                .Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>
+                (products));
         }
-        
+
         // As far as API cotroller concerned there is no difference between these two methods
         // What api uses to choose the correct endpoint we are going to is a comination of 
         // the Route e.g. [Route("api/[controller]")], the method e.g. [HttpGet("{id}")]
