@@ -60,6 +60,7 @@ namespace API
 
             // responsible to getting us to the controller
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
