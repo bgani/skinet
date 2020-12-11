@@ -28,6 +28,7 @@ namespace Infrastructure.Data
 
         public  async Task<T> GetEntityWithSpec(ISpecification<T> spec)
         {
+            // FirstOrDefaultAsync - this is the point where we execute the query
             return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
 

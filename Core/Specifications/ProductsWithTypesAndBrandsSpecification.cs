@@ -18,6 +18,7 @@ namespace Core.Specifications
             int id
         ) : base( x=> x.Id == id)
         {
+            // adding inlcude statements
             AddInclude(x => x.ProductType);
             AddInclude(x => x.ProductBrand);
         }
