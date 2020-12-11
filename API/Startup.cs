@@ -1,4 +1,5 @@
 using API.Helpers;
+using API.MIddleware;
 using AutoMapper;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -48,12 +49,7 @@ namespace API
         // When adding a middleware in Configure method the ordering is important
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // if we are in a dev mode
-            if (env.IsDevelopment())
-            {
-                // developer friendly exception page
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ExceptionMiddleware>();
 
             // when we don't have an endpoint that matches the request it's gonna redirect to errors controller and pass in the statuc code
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
