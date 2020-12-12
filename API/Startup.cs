@@ -1,18 +1,13 @@
-using System.Linq;
-using API.Errors;
+using API.Extensions;
 using API.Helpers;
 using API.MIddleware;
 using AutoMapper;
-using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 namespace API
 {
@@ -31,13 +26,6 @@ namespace API
         // the only exception is when configuring controller configuration must be after adding controller 
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddTransient got very short lifetime, the repo will be created and destroyed upon using individual method
-            // sevices.AddSinglton got very long lifetime, the repo will be created when app starts and never be destroyed until the app shuts down
-            // servces.AddScoped got the optimal lifetime, the instance of repo will be created when the http comes in, when the request is finished it disposes a controller and the repository
-            services.AddScoped<IProductRepository, ProductRepository>();
-
-            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
-
             services.AddAutoMapper(typeof(MappingProfiles));
 
             services.AddControllers();
@@ -46,29 +34,9 @@ namespace API
             services.AddDbContext<StoreContext>(x =>
             x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = actionContext =>
-                {
-                    var errors = actionContext.ModelState
-                        .Where(e => e.Value.Errors.Count > 0)
-                        .SelectMany(x => x.Value.Errors)
-                        .Select(x => x.ErrorMessage)
-                        .ToArray();
+            services.AddApplicationServices();
 
-                    var errorResponse = new ApiValidationErrorResponse
-                    {
-                        Errors = errors
-                    };
-
-                    return new BadRequestObjectResult(errorResponse);
-                };
-            });
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SkiNet Api", Version = "v1" });
-            });
+            services.AddSwaggerDocumentation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,11 +60,7 @@ namespace API
 
             app.UseAuthorization();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SkiNet API v1");
-            });
+            app.UseSwaggerDocumentation();
 
             // When we start our app, it is gonna map all of our endpoints in a controller
             // so our API server where to send request on to
