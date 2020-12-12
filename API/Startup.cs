@@ -37,6 +37,17 @@ namespace API
             services.AddApplicationServices();
 
             services.AddSwaggerDocumentation();
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", plicy =>
+                {
+                    // it basically tells client app that 
+                    // if it is running in an unsecured port we're not gonna return a header
+                    // that's gonna allow our browser to display that information
+                    plicy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +68,8 @@ namespace API
             // responsible to getting us to the controller
             app.UseRouting();
             app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
