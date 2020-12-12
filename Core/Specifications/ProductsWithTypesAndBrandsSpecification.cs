@@ -6,7 +6,12 @@ namespace Core.Specifications
 {
     public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
     {
-        public ProductsWithTypesAndBrandsSpecification(string sort)
+        // (!brandId.HasValue || x.ProductBrandId == brandId) - or else condition, 
+        // if the !brandId.HasValue  is false then it executes what is on the right hand side of this condition
+        public ProductsWithTypesAndBrandsSpecification(string sort, int? brandId, int? typeId)
+        :base(x => 
+            (!brandId.HasValue || x.ProductBrandId == brandId) && 
+            (!typeId.HasValue || x.ProductTypeId == typeId))
         {
             AddInclude(x => x.ProductType);
             AddInclude(x => x.ProductBrand);
