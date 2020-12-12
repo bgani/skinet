@@ -9,9 +9,10 @@ namespace Core.Specifications
         // (!brandId.HasValue || x.ProductBrandId == brandId) - or else condition, 
         // if the !brandId.HasValue  is false then it executes what is on the right hand side of this condition
         public ProductsWithTypesAndBrandsSpecification(ProductSpecParams productParams)
-        :base(x => 
-            (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) && 
-            (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId))
+            :base(x => 
+                (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) && 
+                (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId)
+            )
         {
             AddInclude(x => x.ProductType);
             AddInclude(x => x.ProductBrand);
