@@ -49,10 +49,10 @@ namespace API.Controllers
         // and any route parameters
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)] 
+        public async Task<ActionResult<ProductToReturnDto>> GetProduct(string sort)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification(id);
+            var spec = new ProductsWithTypesAndBrandsSpecification(sort);
 
             var product = await _productsRepo.GetEntityWithSpec(spec);
 
