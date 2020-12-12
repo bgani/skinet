@@ -33,11 +33,14 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        // we are sending parameters as a querystring, but we told to api to look at the ProductSpecParams object
+        // it is going to start to look the body of a request, but we don't have a body when using an HttpGet request
+        // to bind string query to ProductSpecParams we need to add [FromQuery] attribute
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts(
-            string sort, int? brandId, int? typeId)
+            [FromQuery]ProductSpecParams productParams)
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification(sort, brandId, typeId);
+            var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
             var products = await _productsRepo.ListAsync(spec);
             return Ok(_mapper
                 .Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>

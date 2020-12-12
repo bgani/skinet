@@ -8,18 +8,23 @@ namespace Core.Specifications
     {
         // (!brandId.HasValue || x.ProductBrandId == brandId) - or else condition, 
         // if the !brandId.HasValue  is false then it executes what is on the right hand side of this condition
-        public ProductsWithTypesAndBrandsSpecification(string sort, int? brandId, int? typeId)
+        public ProductsWithTypesAndBrandsSpecification(ProductSpecParams productParams)
         :base(x => 
-            (!brandId.HasValue || x.ProductBrandId == brandId) && 
-            (!typeId.HasValue || x.ProductTypeId == typeId))
+            (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) && 
+            (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId))
         {
             AddInclude(x => x.ProductType);
             AddInclude(x => x.ProductBrand);
             AddOrderBy(x => x.Name);
+            // 1st parameter is skip, 2nd is take
+            // e.g if pageSize is 5, and if we want pageIndex 3.  So that means we skip 10 records and take next 5.
+            ApplyPaging(
+                productParams.PageSize *  (productParams.PageIndex - 1), 
+                productParams.PageSize);
 
-            if (!string.IsNullOrEmpty(sort)) 
+            if (!string.IsNullOrEmpty(productParams.Sort)) 
             {
-                switch(sort)
+                switch(productParams.Sort)
                 {
                     case "priceAsc": 
                         AddOrderBy(p => p.Price);
