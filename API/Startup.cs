@@ -1,3 +1,5 @@
+using System.Linq;
+using API.Errors;
 using API.Helpers;
 using API.MIddleware;
 using AutoMapper;
@@ -5,6 +7,7 @@ using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +26,8 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         // This is refered to dependency injectin container. Any services that we want to add to our app, 
         // that we want to make available to other parts of app we add inside of this method.
-        // When adding services the order does not matter
+        // When adding services the order does not matter, 
+        // the only exception is when configuring controller configuration must be after adding controller 
         public void ConfigureServices(IServiceCollection services)
         {
             // services.AddTransient got very short lifetime, the repo will be created and destroyed upon using individual method
@@ -40,6 +44,24 @@ namespace API
             // once the request is finished, then the StoreContext is disposed
             services.AddDbContext<StoreContext>(x =>
             x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+            services.Configure<ApiBehaviorOptions>(options => {
+                options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    var errors = actionContext.ModelState
+                        .Where(e => e.Value.Errors.Count > 0)
+                        .SelectMany(x => x.Value.Errors)
+                        .Select(x => x.ErrorMessage)
+                        .ToArray();
+
+                    var errorResponse = new ApiValidationErrorResponse
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
