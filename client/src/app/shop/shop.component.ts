@@ -75,11 +75,14 @@ export class ShopComponent implements OnInit {
 
   onBrandSelected(brandId: number) {
     this.shopParams.brandId = brandId;
+    // pageNumber must be set to 1 because we need to return 1st page of results regardless our server
+    this.shopParams.pageNumber = 1;
     this.getProducts();
   }
 
   onTypeSelected(typeId: number) {
     this.shopParams.typeId = typeId;
+    this.shopParams.pageNumber = 1;
     this.getProducts();
   }
 
@@ -98,6 +101,7 @@ export class ShopComponent implements OnInit {
 
   onSearch(){
     this.shopParams.search = this.searchTerm?.nativeElement.value;
+    this.shopParams.pageNumber = 1;
     this.getProducts();
   }
 
