@@ -38,7 +38,6 @@ export class ShopService {
     })
     .pipe(
       map((response) => {
-        console.log(response);
         return response.body; 
       })
     );
