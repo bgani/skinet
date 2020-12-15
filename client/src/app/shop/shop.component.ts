@@ -15,6 +15,12 @@ export class ShopComponent implements OnInit {
   types: IType[] = [];
   brandIdSelected = 0;
   typeIdSelected = 0;
+  sortSelected = 'name';
+  sortOptions = [
+    { name: 'Alphabetical', value: 'name' },
+    { name: 'Price: Low to High', value: 'priceAsc' },
+    { name: 'Price: High to Low', value: 'priceDsc' },
+  ];
 
   constructor(private shopService: ShopService) {}
 
@@ -26,11 +32,11 @@ export class ShopComponent implements OnInit {
 
   getProducts() {
     this.shopService
-      .getProducts(this.brandIdSelected, this.typeIdSelected)
+      .getProducts(this.brandIdSelected, this.typeIdSelected, this.sortSelected)
       .subscribe(
         (response) => {
           if (response) {
-            console.log(response)
+            console.log(response);
             this.products = response.data;
           }
         },
@@ -40,10 +46,10 @@ export class ShopComponent implements OnInit {
       );
   }
 
-  getBrands() { 
+  getBrands() {
     this.shopService.getBrands().subscribe(
       (response) => {
-        this.brands = [{id: 0, name: 'All' }, ...response];
+        this.brands = [{ id: 0, name: 'All' }, ...response];
       },
       (error) => {
         console.log(error);
@@ -54,7 +60,7 @@ export class ShopComponent implements OnInit {
   getTypes() {
     this.shopService.getTypes().subscribe(
       (response) => {
-        this.types = [{id: 0, name: 'All' }, ...response];
+        this.types = [{ id: 0, name: 'All' }, ...response];
       },
       (error) => {
         console.log(error);
@@ -69,6 +75,11 @@ export class ShopComponent implements OnInit {
 
   onTypeSelected(typeId: number) {
     this.typeIdSelected = typeId;
+    this.getProducts();
+  }
+
+  onSortSelected(sort: string) {
+    this.sortSelected = sort;
     this.getProducts();
   }
 }
