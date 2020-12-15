@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IBrand } from '../shared/models/brand';
 import { IProduct } from '../shared/models/product';
 import { IType } from '../shared/models/productType';
@@ -11,11 +11,14 @@ import { ShopService } from './shop.service';
   styleUrls: ['./shop.component.scss'],
 })
 export class ShopComponent implements OnInit {
+  // since angular 8 default is {static: false}, but since we're not using *ngIf to whether or not to display input
+  // and input is a part of our template, and it is always going to be available we set {static: true}
+  @ViewChild('search', {static: false}) searchTerm?: ElementRef;
   products: IProduct[] = [];
   brands: IBrand[] = [];
   types: IType[] = [];
   shopParams = new ShopParams();
-  totalCount = 0;
+  totalCount = 0; 
   sortOptions = [
     { name: 'Alphabetical', value: 'name' },
     { name: 'Price: Low to High', value: 'priceAsc' },
@@ -90,6 +93,19 @@ export class ShopComponent implements OnInit {
     console.log('shop')
     // event is supplied by child component - app-pager
     this.shopParams.pageNumber = event;
+    this.getProducts();
+  }
+
+  onSearch(){
+    this.shopParams.search = this.searchTerm?.nativeElement.value;
+    this.getProducts();
+  }
+
+  onReset(){
+    if(this.searchTerm != undefined) {
+      this.searchTerm.nativeElement.value = '';
+    }
+    this.shopParams = new ShopParams();
     this.getProducts();
   }
 }

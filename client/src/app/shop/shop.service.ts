@@ -26,9 +26,14 @@ export class ShopService {
       params = params.append('typeId', shopParams.typeId.toString());
     }
 
+    if(shopParams.search){
+      params = params.append('search', shopParams.search);
+    }
+
     params = params.append('sort', shopParams.sort);
     params = params.append('pageIndex', shopParams.pageNumber.toString());
     params = params.append('pageSize', shopParams.pageSize.toString());
+
    
     // if we pass params inside an object, not as a single string, we get HttpResponse as a result
     // we have to map the response to get the body of response
