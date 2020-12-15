@@ -4,7 +4,7 @@
       <h5 class="text-warning ml-3">Sort</h5>
       <select
         class="custom-select mb-3"
-        (change)="onSortSelected($event.target.value)"
+        (change)="onSortSelected($event)"
       >
         <option *ngFor="let sort of sortOptions" [value]="sort.value">
           {{ sort.name }}
@@ -65,6 +65,8 @@
         <pagination
           [boundaryLinks]="true"
           [totalItems]="this.totalCount"
+          (pageChanged) = "onPageChanged($event)"
+          [itemsPerPage]="this.shopParams.pageSize"
           previousText="&lsaquo;"
           nextText="&rsaquo;"
           firstText="&laquo;"

@@ -18,18 +18,18 @@ export class ShopService {
   getProducts(shopParams: ShopParams) {
     let params = new HttpParams();
 
-    if (shopParams.brandId) {
+    if (shopParams.brandId !== 0) {
       params = params.append('brandId', shopParams.brandId.toString());
     }
 
-    if (shopParams.typeId) {
+    if (shopParams.typeId !== 0) {
       params = params.append('typeId', shopParams.typeId.toString());
     }
 
-    if(shopParams.sort){
-      params = params.append('sort', shopParams.sort);
-    }
-
+    params = params.append('sort', shopParams.sort);
+    params = params.append('pageIndex', shopParams.pageNumber.toString());
+    params = params.append('pageSize', shopParams.pageSize.toString());
+   
     // if we pass params inside an object, not as a single string, we get HttpResponse as a result
     // we have to map the response to get the body of response
     return this.http.get<IPagination>(this.baseUrl + 'products', {
