@@ -93,10 +93,14 @@ export class ShopComponent implements OnInit {
   }
 
   onPageChanged(event: any){
-    console.log('shop')
-    // event is supplied by child component - app-pager
-    this.shopParams.pageNumber = event;
-    this.getProducts();
+    // when we click on a filter totalCount property changes, and that fires a pageChanged event in the pager component
+    // which causes a double call to api
+    // to prevent this we need to check if pageNumber is not an event
+    if(this.shopParams.pageNumber !== event) {
+        // event is supplied by child component - app-pager
+        this.shopParams.pageNumber = event;
+        this.getProducts();
+    }
   }
 
   onSearch(){
