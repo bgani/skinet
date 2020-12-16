@@ -11,3 +11,22 @@
     top: -12px;
     right: 32px;
 }
+
+// scss gives a feature that allows to apply style for a tag/class inside the same curly braces using ampersand. E.g &.active { ... }
+// instead of creating a new style a.active {}
+a {
+    text-decoration: none;
+    color: #343a40;
+
+    &.active {
+        color: orange;
+    }
+}
+
+.logo {
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
+}
