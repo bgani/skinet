@@ -11,8 +11,7 @@ import { ShopService } from './shop.service';
   styleUrls: ['./shop.component.scss'],
 })
 export class ShopComponent implements OnInit {
-  // since angular 8 default is {static: false}, but since we're not using *ngIf to whether or not to display input
-  // and input is a part of our template, and it is always going to be available we set {static: true}
+  // since we are making the component appear after products are available we set it to {static: false}
   @ViewChild('search', {static: false}) searchTerm?: ElementRef;
   products: IProduct[] = [];
   brands: IBrand[] = [];
