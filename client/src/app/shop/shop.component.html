@@ -1,11 +1,11 @@
-<div class="container mt-5">
+<div class="container mt-3">
   <div class="row">
 
     <section class="col-3">
       
       <ng-container *ngIf="types.length > 0 && brands.length > 0">
-        <h5 class="text-warning ml-3">Sort</h5>
-        <select class="custom-select mb-3" (change)="onSortSelected($event)">
+        <h5 class="text-warning ml-3 mt-4 mb-4">Sort</h5>
+        <select class="custom-select mb-4" (change)="onSortSelected($event)">
           <option *ngFor="let sort of sortOptions" [value]="sort.value">
             {{ sort.name }}
           </option>
