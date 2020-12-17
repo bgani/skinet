@@ -1,3 +1,4 @@
+using API.Errors;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace API.Controllers
             var thing = _context.Products.Find(42); // 42 does not exist in database
             if(thing == null)
             {
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             }
             return Ok();
         }
@@ -35,7 +36,7 @@ namespace API.Controllers
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
-            return BadRequest(); // 400 request bad result
+            return BadRequest(new ApiResponse(400)); // 400 request bad result
         }
 
         // we gonna pass here string instead of int
