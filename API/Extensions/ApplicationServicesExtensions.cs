@@ -17,6 +17,8 @@ namespace API.Extensions
             // sevices.AddSinglton got very long lifetime, the repo will be created when app starts and never be destroyed until the app shuts down
             // servces.AddScoped got the optimal lifetime, the instance of repo will be created when the http comes in, when the request is finished it disposes a controller and the repository
             services.AddScoped<IProductRepository, ProductRepository>();
+            
+            services.AddScoped<IBasketRepository, BasketRepository>();
 
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
