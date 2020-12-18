@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { BasketService } from 'src/app/basket/basket.service';
+import { IBasket } from 'src/app/shared/models/basket';
 
 
 @Component({
@@ -8,9 +11,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavBarComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(private basketService: BasketService) { }
+  // async pipe will dispose thise observable for us
+  basket$: Observable<IBasket> = new Observable<IBasket>();
   ngOnInit(): void {
+    this.basket$ = this.basketService.basket$;
   }
 
 }
