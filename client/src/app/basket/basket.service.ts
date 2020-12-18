@@ -30,6 +30,7 @@ export class BasketService {
     return this.http.post<IBasket>(this.baseUrl + 'basket', basket)
       .subscribe((response: IBasket) => {
           this.basketSource.next(response);
+          console.log(response);
       }, 
       error => {
         console.log(error);
