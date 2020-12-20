@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Basket, IBasket, IBasketItem } from '../shared/models/basket';
+import { Basket, IBasket, IBasketItem, IBasketTotals } from '../shared/models/basket';
 import { IProduct } from '../shared/models/product';
 
 @Injectable({
@@ -15,6 +15,9 @@ export class BasketService {
   // in strict mode we can not pass null to new BehaviorSubject<IBasket>(null), we can pass null as any
   private basketSource = new BehaviorSubject<IBasket>(null as any);
   basket$ = this.basketSource.asObservable();
+  private basketTotalSource = new BehaviorSubject<IBasketTotals>(null as any);
+  basketTotal$ = this.basketTotalSource.asObservable();
+
   constructor(private http: HttpClient) { }
   
   getBasket(id: string){
@@ -22,7 +25,7 @@ export class BasketService {
     .pipe(
       map((basket: IBasket) => {
         this.basketSource.next(basket);
-        console.log(this.getCurrentBasketValue())
+        this.calculateTotals();
       })
     );
   }
@@ -31,7 +34,7 @@ export class BasketService {
     return this.http.post<IBasket>(this.baseUrl + 'basket', basket)
       .subscribe((response: IBasket) => {
           this.basketSource.next(response);
-          console.log(response);
+          this.calculateTotals();
       }, 
       error => {
         console.log(error);
@@ -47,6 +50,17 @@ export class BasketService {
     const basket = this.getCurrentBasketValue() ?? this.createBasket();
     basket.items = this.addOrUpdateItem(basket.items, itemToAdd, quantity);
     this.setBasket(basket);
+  }
+
+  private calculateTotals(){
+    const basket = this.getCurrentBasketValue();
+    const shipping = 0;
+    // b represents item, and each item has price & quantity, we are multiplying that and adding to 'a'
+    // a represents the number, the result we are returning this reduce function/
+    // 'a' is given an initial value of 0
+    const subtotal = basket.items.reduce((a, b) => (b.price * b.quantity) + a, 0);
+    const total = subtotal + shipping;
+    this.basketTotalSource.next({shipping, total, subtotal});
   }
   
   private addOrUpdateItem(items: IBasketItem[], itemToAdd: IBasketItem, quantity: number): any {
