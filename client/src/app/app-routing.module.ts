@@ -34,7 +34,13 @@ const routes: Routes = [
       import('./basket/basket.module').then((mod) => mod.BasketModule),
     data: { breadcrumb: 'Basket' },
   },
-  { path: '**', redirectTo: 'not-found', pathMatch: 'full' },
+  {
+    path: 'checkout',
+    loadChildren: () =>
+      import('./checkout/checkout.module').then((mod) => mod.CheckoutModule),
+    data: { breadcrumb: 'Checkout' },
+  },
+  { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
 ];
 
 @NgModule({
