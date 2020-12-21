@@ -37,7 +37,7 @@ namespace API
             x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
             
             services.AddDbContext<AppIdentityDbContext>(x => {
-                x.UseSqlite(_config.GetConnectionString("IdentityConnection"))
+                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
             });
 
             services.AddSingleton<IConnectionMultiplexer>(c => {
