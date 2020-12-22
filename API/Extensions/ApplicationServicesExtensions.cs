@@ -2,6 +2,7 @@ using System.Linq;
 using API.Errors;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,11 +10,14 @@ namespace API.Extensions
 {
     public static class ApplicationServicesExtensions
     {
+        
         // Extending IServiceCollection
         // Adding Services
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-             // services.AddTransient got very short lifetime, the repo will be created and destroyed upon using individual method
+             services.AddScoped<ITokenService, TokenService>();
+
+            // services.AddTransient got very short lifetime, the repo will be created and destroyed upon using individual method
             // sevices.AddSinglton got very long lifetime, the repo will be created when app starts and never be destroyed until the app shuts down
             // servces.AddScoped got the optimal lifetime, the instance of repo will be created when the http comes in, when the request is finished it disposes a controller and the repository
             services.AddScoped<IProductRepository, ProductRepository>();
