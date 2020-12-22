@@ -23,6 +23,9 @@ namespace API.Helpers
 
             // ReverseMap maps the other way additonal to default mapping
             CreateMap<Address, AddressDto>().ReverseMap();
+
+            CreateMap<CustomerBasketDto, CustomerBasket>();
+            CreateMap<BasketItemDto, BasketItem>();
         } 
     }
 }
