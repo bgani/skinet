@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Identity
 {
-    public class AppidentityDbContextSeed
+    public class AppIdentityDbContextSeed
     {
         public static async Task SeedUserAsync(UserManager<AppUser> userManager) 
         {
