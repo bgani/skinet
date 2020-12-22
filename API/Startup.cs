@@ -48,7 +48,7 @@ namespace API
 
             services.AddApplicationServices();
 
-            services.AddIdentityServices();
+            services.AddIdentityServices(_config);
 
             services.AddSwaggerDocumentation();
 
@@ -84,6 +84,9 @@ namespace API
             app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
+
+            // authentication must be directly before the middleware use authorization
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
