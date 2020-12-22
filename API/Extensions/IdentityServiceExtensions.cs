@@ -37,7 +37,9 @@ namespace API.Extensions
                                     config["Token:Key"])),
                         ValidIssuer = config["Token:Issuer"], 
                         // we need to validate issuer
-                        ValidateIssuer = true
+                        ValidateIssuer = true,
+                        // by doing this we've overriden a default conf
+                        ValidateAudience = false
                     };
                 });
             return services;
