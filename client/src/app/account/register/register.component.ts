@@ -10,6 +10,7 @@ import { AccountService } from '../account.service';
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup = null as any;
+  errors: string[] = null as any;
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +43,7 @@ export class RegisterComponent implements OnInit {
       },
       (error) => {
         console.log(error);
+        this.errors = error.errors;
       }
     );
   }
