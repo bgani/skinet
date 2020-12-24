@@ -40,7 +40,7 @@
     </ng-container>
 
     <ng-container *ngIf="currentUser$ | async">
-        <a href="#">Welcome {{(currentUser$ | async).displayName}}</a>
+        <a href="#">Welcome {{(currentUser$ | async)?.displayName}}</a>
     </ng-container>
 
   </div>
