@@ -25,6 +25,8 @@ export class LoginComponent implements OnInit {
       ]),
       password: new FormControl('', Validators.required),
     });
+
+    console.log(this.loginForm.get('email')?.errors)
   }
 
   onSubmit() {
