@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, pipe } from 'rxjs';
+import { BehaviorSubject, isObservable, Observable, pipe, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IUser } from '../shared/models/user';
@@ -11,16 +11,19 @@ import { IUser } from '../shared/models/user';
 })
 export class AccountService {
   baseUrl = environment.apiUrl;
-  private currentUserSource = new BehaviorSubject<IUser>(null as any);
+  // The job of BehaviorSubject is to immedietly emit initial value, and it is not suitable to use with auth guard in our case
+  // That's why we gonna use ReplaySubject, we specify the number of values we want the ReplaySubject to hold e.g 1
+  // And it is gonna cache the value so we can use it
+  private currentUserSource = new ReplaySubject<IUser>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getCurrentUserValue(){
-    return this.currentUserSource.value;
-  }
-
-  loadCurrentUser(token: string) {
+  loadCurrentUser(token: string | null) {
+    if(token === null) {
+      this.currentUserSource.next(null as any);
+      return new Observable<void>();
+    }
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', `Bearer ${token}`);
 
