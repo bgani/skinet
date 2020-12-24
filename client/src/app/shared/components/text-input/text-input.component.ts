@@ -28,7 +28,7 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
 
     // async validator is ones that go to api and check, and it's applied after sync validation
     const asyncValidators = control?.asyncValidator ? [control.asyncValidator] : [];
-      
+
     control?.setValidators(validators);
     control?.setAsyncValidators(asyncValidators);
     control?.updateValueAndValidity();
