@@ -7,6 +7,10 @@ namespace Core.Entities.OrderAggregate
     // we get a list of orders by email
     public class Order : BaseEntity
     {
+        public Order()
+        {
+        }
+
         public Order(IReadOnlyList<OrderItem> orderItems, string buyerEmail, Address shipToAddress, DeliveryMethod deliveryMethod,  decimal subtotal)
         {
             BuyerEmail = buyerEmail;
