@@ -16,6 +16,7 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
              services.AddScoped<ITokenService, TokenService>();
+             services.AddScoped<IOrderService, OrderService>();
 
             // services.AddTransient got very short lifetime, the repo will be created and destroyed upon using individual method
             // sevices.AddSinglton got very long lifetime, the repo will be created when app starts and never be destroyed until the app shuts down
