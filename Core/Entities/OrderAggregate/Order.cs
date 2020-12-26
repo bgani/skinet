@@ -29,6 +29,7 @@ namespace Core.Entities.OrderAggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public string PaymentIntentId { get; set; }
 
+        // automapper looks for GetWhatever() and returns the value of this method as a property Whatever
         public decimal GetTotal()
         {
             return Subtotal + DeliveryMethod.Price;
