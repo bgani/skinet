@@ -17,8 +17,6 @@ export class StepperComponent extends CdkStepper implements OnInit {
   onClick(index: number){
     // to keep track in which step we are currently on
     this.selectedIndex = index;
-    
-    console.log(this.selectedIndex);
   }
 
 }
