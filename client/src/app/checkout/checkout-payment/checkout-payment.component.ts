@@ -39,6 +39,7 @@ export class CheckoutPaymentComponent implements OnInit {
   }
 
   private getOrderToCreate(basket: IBasket) {
+    console.log(basket);
     return {
       basketId: basket.id,
       deliveryMethodId: +this.checkoutForm
