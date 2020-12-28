@@ -11,10 +11,10 @@ export class CheckoutComponent implements OnInit {
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.createCheckoutFrom();
+    this.createCheckoutForm();
   }
 
-  createCheckoutFrom(){
+  createCheckoutForm(){
     this.checkoutForm = this.fb.group({
       addressForm: this.fb.group({
         firstName: [null, Validators.required],
