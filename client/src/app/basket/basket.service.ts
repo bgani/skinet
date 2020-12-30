@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import {
@@ -32,7 +32,6 @@ export class BasketService {
       .pipe(
         map((basket: IBasket) => {
           this.basketSource.next(basket);
-          console.log(this.getCurrentBasketValue());
         })
       );
   }
@@ -133,8 +132,9 @@ export class BasketService {
 
   private calculateTotals() {
     const basket = this.getCurrentBasketValue();
-    if (basket) {
-      const shipping = this.shipping;
+    const shipping = this.shipping;
+
+    if (basket && shipping) {
       // b represents item, and each item has price & quantity, we are multiplying that and adding to 'a'
       // a represents the number, the result we are returning this reduce function/
       // 'a' is given an initial value of 0
