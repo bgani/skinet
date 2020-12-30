@@ -17,6 +17,7 @@ namespace API.Extensions
         {
              services.AddScoped<ITokenService, TokenService>();
              services.AddScoped<IOrderService, OrderService>();
+             services.AddScoped<IPaymentService, PaymentService>();
              services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // services.AddTransient got very short lifetime, the repo will be created and destroyed upon using individual method
