@@ -1,5 +1,13 @@
 import { templateJitUrl } from '@angular/compiler';
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -15,11 +23,15 @@ declare var Stripe: any;
   templateUrl: './checkout-payment.component.html',
   styleUrls: ['./checkout-payment.component.scss'],
 })
-export class CheckoutPaymentComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CheckoutPaymentComponent
+  implements OnInit, AfterViewInit, OnDestroy {
   @Input() checkoutForm: FormGroup = new FormGroup({});
-  @ViewChild('cardNumber', {static: true})  cardNumerElement: ElementRef = null as any;
-  @ViewChild('cardExpiry', {static: true})  cardExpiryElement: ElementRef = null as any;
-  @ViewChild('cardCvc', {static: true})  cardCvcElement: ElementRef = null as any;
+  @ViewChild('cardNumber', { static: true })
+  cardNumerElement: ElementRef = null as any;
+  @ViewChild('cardExpiry', { static: true })
+  cardExpiryElement: ElementRef = null as any;
+  @ViewChild('cardCvc', { static: true })
+  cardCvcElement: ElementRef = null as any;
   stripe: any;
   cardNumber: any;
   cardExpiry: any;
@@ -34,12 +46,13 @@ export class CheckoutPaymentComponent implements OnInit, AfterViewInit, OnDestro
     private router: Router
   ) {}
 
-
   ngAfterViewInit(): void {
-    this.stripe = Stripe('pk_test_51I428MFx8bcBmC8ZlbIZLGAoaUbFF77y0i9mJnMM2ArDywm5FsfC80e5mvG34HXasa5xRwuLFTddcDc2vkKoZGJG00zDvlAyq0');
+    this.stripe = Stripe(
+      'pk_test_51I428MFx8bcBmC8ZlbIZLGAoaUbFF77y0i9mJnMM2ArDywm5FsfC80e5mvG34HXasa5xRwuLFTddcDc2vkKoZGJG00zDvlAyq0'
+    );
     const elements = this.stripe.elements();
 
-    // stripe elements 
+    // stripe elements
     this.cardNumber = elements.create('cardNumber');
     this.cardNumber.mount(this.cardNumerElement.nativeElement);
     this.cardNumber.addEventListener('change', this.cardHandler);
@@ -60,13 +73,12 @@ export class CheckoutPaymentComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit(): void {}
-  
-  onChange({error} : {error: any}){
-    if(error){
+
+  onChange({ error }: { error: any }) {
+    if (error) {
       // error comes from stripe
       this.cardErrors = error.message;
-    } 
-    else {
+    } else {
       this.cardErrors = null;
     }
   }
@@ -74,17 +86,36 @@ export class CheckoutPaymentComponent implements OnInit, AfterViewInit, OnDestro
   submitOrder() {
     const basket = this.basketService.getCurrentBasketValue();
     const order = this.getOrderToCreate(basket);
-    this.checkoutService.createOrder(order)
-      .subscribe((order: IOrder) => {
-          this.toastr.success('Order created successfully');
-          this.basketService.deleteLocalBasket(basket.id);
-          const navigationExtras: NavigationExtras =  { state: order};
-          this.router.navigate(['checkout/success'], navigationExtras);
+    this.checkoutService.createOrder(order).subscribe(
+      (order: IOrder) => {
+        this.toastr.success('Order created successfully');
+        this.stripe
+          .confirmCardPayment(basket.clientSecret, {
+            payment_method: {
+              card: this.cardNumber,
+              billing_details: {
+                name: this.checkoutForm.get('paymentForm')?.get('nameOnCard')
+                  ?.value,
+              },
+            },
+          })
+          .then((result: any) => {
+            
+            console.log(result);
+            if (result.paymentIntent) {
+              this.basketService.deleteLocalBasket(basket.id);
+              const navigationExtras: NavigationExtras = { state: order };
+              this.router.navigate(['checkout/success'], navigationExtras);
+            } else {
+              this.toastr.error('Payment error');
+            }
+          });
       },
-      error => {
+      (error) => {
         this.toastr.error(error.message);
         console.log(error);
-      });
+      }
+    );
   }
 
   private getOrderToCreate(basket: IBasket) {
