@@ -29,14 +29,14 @@ export class ShopComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getProducts();
+    this.getProducts(true);
     this.getBrands();
     this.getTypes();
   }
 
-  getProducts() {
+  getProducts(useCache = false) {
     this.shopService
-      .getProducts()
+      .getProducts(useCache)
       .subscribe(
         (response) => {
           if (response) {
@@ -106,7 +106,7 @@ export class ShopComponent implements OnInit {
         // event is supplied by child component - app-pager
         params.pageNumber = event;
         this.shopService.setShopParams(params);
-        this.getProducts();
+        this.getProducts(true);
     }
   }
 
@@ -122,8 +122,8 @@ export class ShopComponent implements OnInit {
     if(this.searchTerm != undefined) {
       this.searchTerm.nativeElement.value = '';
     }
-    const params = new ShopParams();
-    this.shopService.setShopParams(params);
+    this.shopParams = new ShopParams();
+    this.shopService.setShopParams(this.shopParams);
     this.getProducts();
   }
 }
