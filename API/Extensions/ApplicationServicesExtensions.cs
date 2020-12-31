@@ -15,6 +15,9 @@ namespace API.Extensions
         // Adding Services
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+             // we want caching to be available, and shared across our API
+             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+
              services.AddScoped<ITokenService, TokenService>();
              services.AddScoped<IOrderService, OrderService>();
              services.AddScoped<IPaymentService, PaymentService>();
