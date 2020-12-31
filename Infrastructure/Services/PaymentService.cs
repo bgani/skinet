@@ -113,7 +113,7 @@ namespace Infrastructure.Services
 
             await _unitOfWork.Complete();
             
-            return null;
+            return order;
         }
     }
 }

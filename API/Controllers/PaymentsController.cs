@@ -55,7 +55,7 @@ namespace API.Controllers
                 case "payment_intent.payment_failed":
                     intent = (PaymentIntent) stripeEvent.Data.Object;
                     _logger.LogInformation("Payment failed: ", intent.Id);
-                    order = await _paymentService.UpdateOrderPaymentFailed(intent.id);
+                    order = await _paymentService.UpdateOrderPaymentFailed(intent.Id);
                     _logger.LogInformation("Payment failed: ", order.Id);
                     break;
             }
