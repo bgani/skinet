@@ -88,7 +88,7 @@ namespace API
             {
                 FileProvider = 
                 new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Content")),
+                    Path.Combine(Directory.GetCurrentDirectory(), "Content/")),
 
                 RequestPath = "/content"
             });
@@ -107,6 +107,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                
                 endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
