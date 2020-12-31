@@ -16,7 +16,7 @@ export class ShopComponent implements OnInit {
   products: IProduct[] = [];
   brands: IBrand[] = [];
   types: IType[] = [];
-  shopParams = new ShopParams();
+  shopParams: ShopParams;
   totalCount = 0; 
   sortOptions = [
     { name: 'Alphabetical', value: 'name' },
@@ -24,7 +24,9 @@ export class ShopComponent implements OnInit {
     { name: 'Price: High to Low', value: 'priceDsc' },
   ];
 
-  constructor(private shopService: ShopService) {}
+  constructor(private shopService: ShopService) {
+    this.shopParams = this.shopService.getShopParams();
+  }
 
   ngOnInit(): void {
     this.getProducts();
@@ -34,13 +36,11 @@ export class ShopComponent implements OnInit {
 
   getProducts() {
     this.shopService
-      .getProducts(this.shopParams)
+      .getProducts()
       .subscribe(
         (response) => {
           if (response) {
             this.products = response.data;
-            this.shopParams.pageNumber = response.pageIndex;
-            this.shopParams.pageSize = response.pageSize;
             this.totalCount = response.count;
           }
         },
@@ -73,21 +73,25 @@ export class ShopComponent implements OnInit {
   }
 
   onBrandSelected(brandId: number) {
-    this.shopParams.brandId = brandId;
-    // pageNumber must be set to 1 because we need to return 1st page of results regardless our server
-    this.shopParams.pageNumber = 1;
+    const params = this.shopService.getShopParams();
+    params.brandId = brandId;
+    params.pageNumber = 1;
+    this.shopService.setShopParams(params);
     this.getProducts();
   }
 
   onTypeSelected(typeId: number) {
-    this.shopParams.typeId = typeId;
-    this.shopParams.pageNumber = 1;
+    const params = this.shopService.getShopParams();
+    params.typeId = typeId;
+    params.pageNumber = 1;
+    this.shopService.setShopParams(params);
     this.getProducts();
   }
 
   onSortSelected(event: any) {
-
-    this.shopParams.sort = event.target.value;
+    const params = this.shopService.getShopParams();
+    params.sort = event.target.value;
+    this.shopService.setShopParams(params);
     this.getProducts();
   }
 
@@ -95,16 +99,22 @@ export class ShopComponent implements OnInit {
     // when we click on a filter totalCount property changes, and that fires a pageChanged event in the pager component
     // which causes a double call to api
     // to prevent this we need to check if pageNumber is not an event
+
+    const params = this.shopService.getShopParams();
+
     if(this.shopParams.pageNumber !== event) {
         // event is supplied by child component - app-pager
-        this.shopParams.pageNumber = event;
+        params.pageNumber = event;
+        this.shopService.setShopParams(params);
         this.getProducts();
     }
   }
 
   onSearch(){
-    this.shopParams.search = this.searchTerm?.nativeElement.value;
-    this.shopParams.pageNumber = 1;
+    const params = this.shopService.getShopParams();
+    params.search = this.searchTerm?.nativeElement.value;
+    params.pageNumber = 1;
+    this.shopService.setShopParams(params);
     this.getProducts();
   }
 
@@ -112,7 +122,8 @@ export class ShopComponent implements OnInit {
     if(this.searchTerm != undefined) {
       this.searchTerm.nativeElement.value = '';
     }
-    this.shopParams = new ShopParams();
+    const params = new ShopParams();
+    this.shopService.setShopParams(params);
     this.getProducts();
   }
 }
