@@ -39,6 +39,9 @@ export class CheckoutPaymentComponent
   cardErrors: any;
   cardHandler = this.onChange.bind(this);
   loading = false;
+  cardNumberValid = false;
+  cardExpiryValid = false;
+  cardCvcValid = false;
 
   constructor(
     private basketService: BasketService,
@@ -75,12 +78,24 @@ export class CheckoutPaymentComponent
 
   ngOnInit(): void {}
 
-  onChange({ error }: { error: any }) {
-    if (error) {
+  onChange(event: any) {
+    if (event.error) {
       // error comes from stripe
-      this.cardErrors = error.message;
+      this.cardErrors = event.error.message;
     } else {
       this.cardErrors = null;
+    }
+
+    switch (event.elementType) {
+      case 'cardNumber':
+        this.cardNumberValid = event.complete;
+        break;
+      case 'cardExpiry':
+        this.cardExpiryValid = event.complete;
+        break;
+      case 'cardCvc':
+        this.cardCvcValid = event.complete;
+        break;
     }
   }
 
