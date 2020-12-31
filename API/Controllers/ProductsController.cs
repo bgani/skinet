@@ -37,6 +37,7 @@ namespace API.Controllers
         // we are sending parameters as a querystring, but we told to api to look at the ProductSpecParams object
         // it is going to start to look the body of a request, but we don't have a body when using an HttpGet request
         // to bind string query to ProductSpecParams we need to add [FromQuery] attribute
+        [Cached(600)]
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts(
             [FromQuery]ProductSpecParams productParams)
@@ -64,6 +65,7 @@ namespace API.Controllers
         // What api uses to choose the correct endpoint we are going to is a comination of 
         // the Route e.g. [Route("api/[controller]")], the method e.g. [HttpGet("{id}")]
         // and any route parameters
+        [Cached(600)]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -79,6 +81,7 @@ namespace API.Controllers
             return _mapper.Map<Product, ProductToReturnDto>(product);
         }
 
+        [Cached(600)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
@@ -86,6 +89,7 @@ namespace API.Controllers
             return Ok(await _productBrandRepo.ListAllAsync());
         }
 
+        [Cached(600)]
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
