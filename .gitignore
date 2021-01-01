@@ -432,4 +432,12 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 appsettings.json
+
 wwwroot
+obj
+bin
+*.db
+*.rdb
+settings.json
+publish
+.idea
