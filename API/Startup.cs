@@ -23,6 +23,35 @@ namespace API
             _config = config;
         }
 
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            // the StoreContext will be abailable only limited period given in a ServiceLifeTime.Scoped, which is a the http request entirety
+            // once the request is finished, then the StoreContext is disposed
+            services.AddDbContext<StoreContext>(x =>
+            x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
+
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<StoreContext>(x =>
+            x.UseMySql(_config.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseMySql(_config.GetConnectionString("IdentityConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // This is refered to dependency injectin container. Any services that we want to add to our app, 
         // that we want to make available to other parts of app we add inside of this method.
@@ -33,17 +62,11 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
 
             services.AddControllers();
-            // the StoreContext will be abailable only limited period given in a ServiceLifeTime.Scoped, which is a the http request entirety
-            // once the request is finished, then the StoreContext is disposed
-            services.AddDbContext<StoreContext>(x =>
-            x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
-            
-            services.AddDbContext<AppIdentityDbContext>(x => {
-                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
-            });
 
-            services.AddSingleton<IConnectionMultiplexer>(c => {
-                var configuration =  ConfigurationOptions
+
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+                var configuration = ConfigurationOptions
                     .Parse(_config.GetConnectionString("Redis"), true);
                 return ConnectionMultiplexer.Connect(configuration);
             });
@@ -86,7 +109,7 @@ namespace API
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = 
+                FileProvider =
                 new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Content/")),
 
@@ -107,7 +130,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                
+
                 endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
